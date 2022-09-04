@@ -28,7 +28,20 @@ app.get("/api", async (req, res) => {
 
     let page = await browser.newPage();
     await page.goto("https://www.google.com");
-    res.send(await page.title());
+
+    let pdf = await page.pdf({
+      format: 'A4',
+      margin: { left: '1cm', top: '1cm', right: '1cm', bottom: '1cm' },
+      printBackground: true,
+      width: 780,
+      height: 1115,
+    });
+
+    res.setHeader('Content-type', 'application/pdf');
+    res.setHeader('isBase64Encoded', true);
+    // pdf = pdf.toString('base64');
+    res.status(200).send(pdf);
+
   } catch (err) {
     console.error(err);
     return null;
